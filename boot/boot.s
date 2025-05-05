@@ -8,10 +8,16 @@ header_start:
     # 空（オプション無し）
 header_end:
 
+.section .bss
+    .skip 16384
+stack_top:
+
 .section .text
-.global _start
-.type _start, @function
-_start:
-    call kernel_main
-1:  hlt
-    jmp 1b
+    .global _start
+    .type _start, @function
+    _start:
+        mov %rsp, stack_top
+        call kernel_main
+    1:
+        hlt
+        jmp 1b
