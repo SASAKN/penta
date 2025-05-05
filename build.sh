@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Directory
+script_dir="$(dirname "$(readlink -f "$0")")"
+
+# Build Directory
+build_dir="${script_dir}/build"
+
+# Image file path
+image_file="${script_dir}/os.iso"
+
+# Kernel file path
+kernel_file="${script_dir}/build/iso/boot/kernel.elf"
+
+# GRUB Config file path
+grub_cfg_file="${script_dir}/build/iso/boot/grub/grub.cfg"
+
+# Compile the assembly code
+x86_64-elf-gcc -ffreestanding -m64 -c "${script_dir}/boot/boot.s" -o "${build_dir}/boot.o" -I "${script_dir}/include"
+
+# Compile the kernel code
+x86_64-elf-gcc -ffreestanding -m64 -c "${script_dir}/kernel/main.c" -o "${build_dir}/kernel.o" -I "${script_dir}/include"
+
+# Link the kernel and boot code
+x86_64-elf-ld -n -o ${build_dir}/kernel.elf -Ttext 0x100000 ${build_dir}/boot.o ${build_dir}/kernel.o --oformat=elf64-x86-64
+
+# Put the kernel in ISO folder
+cp ${build_dir}/kernel.elf ${build_dir}/iso/boot/kernel.elf
+
+# Create the ISO image
+x86_64-elf-grub-mkrescue -o ${image_file} ${build_dir}/iso
+
+echo "ISO image created at ${image_file}"
