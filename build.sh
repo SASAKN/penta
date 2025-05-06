@@ -22,7 +22,7 @@ x86_64-elf-gcc -ffreestanding -m64 -c "${script_dir}/boot/boot.S" -o "${build_di
 x86_64-elf-gcc -ffreestanding -m64 -c "${script_dir}/kernel/main.c" -o "${build_dir}/kernel.o" -I "${script_dir}/include"
 
 # Link the kernel and boot code
-x86_64-elf-ld -n -o ${build_dir}/kernel.elf -Ttext 0x100000 ${build_dir}/boot.o ${build_dir}/kernel.o --oformat=elf64-x86-64
+x86_64-elf-ld -n -o ${build_dir}/kernel.elf -T ${script_dir}/kernel/kernel.ld ${build_dir}/boot.o ${build_dir}/kernel.o --oformat=elf64-x86-64
 
 # Put the kernel in ISO folder
 cp ${build_dir}/kernel.elf ${build_dir}/iso/boot/kernel.elf
