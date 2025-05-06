@@ -17,7 +17,7 @@ stack_top:
     .type _start, @function
     _start:
         mov %rsp, stack_top
-        call kernel_main
+        call cstart
     1:
         hlt
         jmp 1b

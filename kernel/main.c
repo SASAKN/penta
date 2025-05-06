@@ -1,4 +1,5 @@
 #include <types.h>
+#include <multiboot.h>
 
 // デバイスのポートに，データを出力する
 void outb(uint16_t port, uint8_t data) {
@@ -22,6 +23,19 @@ void serial_init() {
     outb(0x3F8 + 2, 0xC7); // Enable FIFO, clear them, with 14-byte threshold
     outb(0x3F8 + 4, 0x0B); // IRQs enabled, RTS/DSR set
 }
+
+uint32_t read_ebx() {
+    uint32_t ebx_value;
+    __asm__ volatile (
+        "mov %%ebx, %0" 
+        : "=r" (ebx_value)  
+        :                    
+        : "%ebx"             
+    );
+
+    return ebx_value;
+}
+
 
 int serial_ready() {
     return inb(0x3F8 + 5) & 0x20;
@@ -66,13 +80,38 @@ void serial_inputs(char *buffer, uint64_t max_len) {
     buffer[i] = '\0'; // Null終端
 }
 
-void kernel_main(void)
-{
+void uint32_to_str(uint32_t value, char *buf) {
+    char temp[11];  // 最大10桁 + 終端
+    int i = 0;
+
+    // 0 の処理
+    if (value == 0) {
+        buf[0] = '0';
+        buf[1] = '\0';
+        return;
+    }
+
+    // 数字を逆順に取得
+    while (value > 0) {
+        temp[i++] = '0' + (value % 10);
+        value /= 10;
+    }
+
+    // 逆順にした文字列を元に戻してbufへ
+    int j = 0;
+    while (i > 0) {
+        buf[j++] = temp[--i];
+    }
+    buf[j] = '\0';
+}
+
+void cstart(void) {
+
+    serial_init();
+    serial_puts("Hello, World!\n");
 
     // Initalize the serial port
-    serial_init();
-    for (;;)
-    {
+    for (;;) {
         __asm__ volatile("hlt");
     }
 }

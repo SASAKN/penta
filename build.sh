@@ -16,7 +16,7 @@ kernel_file="${script_dir}/build/iso/boot/kernel.elf"
 grub_cfg_file="${script_dir}/build/iso/boot/grub/grub.cfg"
 
 # Compile the assembly code
-x86_64-elf-gcc -ffreestanding -m64 -c "${script_dir}/boot/boot.s" -o "${build_dir}/boot.o" -I "${script_dir}/include"
+x86_64-elf-gcc -ffreestanding -m64 -c "${script_dir}/boot/boot.S" -o "${build_dir}/boot.o" -I "${script_dir}/include"
 
 # Compile the kernel code
 x86_64-elf-gcc -ffreestanding -m64 -c "${script_dir}/kernel/main.c" -o "${build_dir}/kernel.o" -I "${script_dir}/include"
