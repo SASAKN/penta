@@ -105,7 +105,7 @@ void uint32_to_str(uint32_t value, char *buf) {
     buf[j] = '\0';
 }
 
-void cstart(void) {
+void kernel_main(void) {
 
     serial_init();
     serial_puts("Hello, World!\n");
