@@ -11,7 +11,7 @@ start:
     ; Check compatibility
     call check_bootloader
     call check_compatibility_cpuid
-    ; call check_compatibility_long_mode
+    call check_compatibility_long_mode
 
     ; Set up for long mode
     call set_up_page_tables
@@ -81,17 +81,18 @@ check_compatibility_long_mode:
     mov eax, 0x80000000
     cpuid
     cmp eax, 0x80000001
-    jb .error ; Not compatible for long mode
+    jb .error
 
     mov eax, 0x80000001
     cpuid
-    test eax, 1 << 29 ; Check if long mode is supported
+    test edx, 1 << 29
     jz .error
 
     ret
 .error:
-    mov al, "E" ; Set the error code
+    mov al, "E"
     jmp error
+
 
 
 ; Check whether the CPU is compatible for CPUID or not
