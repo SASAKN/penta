@@ -154,5 +154,3 @@ gdt64:
 .pointer:
     dw $ - gdt64 - 1 ; size
     dq gdt64 ; address
-
-
