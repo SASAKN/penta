@@ -3,6 +3,8 @@
 #include <proto.h>
 
 // Assembly Functions
+extern void check_compatibility_cpuid(void);
+extern void check_compatibility_long_mode(void);
 extern void set_up_page_tables(void);
 extern void set_up_cr_registers(void);
 extern void enable_long_mode(void);
@@ -14,11 +16,15 @@ extern void start_boot64(void);
 // This program is booted by the 32-bit bootloader.
 
 void bootpack32(uint32_t addr) {
+
     // Initalize the serial port
     serial_init();
     serial_puts("Bootpack32 : Booting...\n");
 
-
+    // Check for the kernel compatibility
+    check_compatibility_cpuid();
+    check_compatibility_long_mode();
+    
     // Set up for long mode
     set_up_page_tables();
     set_up_cr_registers();

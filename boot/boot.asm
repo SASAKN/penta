@@ -1,4 +1,9 @@
+; Start
 global start
+
+; Bootpack32 functions
+global check_compatibility_cpuid
+global check_compatibility_long_mode
 global set_up_page_tables
 global set_up_cr_registers
 global enable_long_mode
@@ -20,6 +25,9 @@ start:
     popfd
 
     push ebx
+
+    ; Check if the bootloader is multiboot-compliant
+    call check_bootloader
 
     ; Call the bootpack32
     call bootpack32
