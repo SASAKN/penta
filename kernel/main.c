@@ -2,7 +2,7 @@
 #include <multiboot.h>
 #include <proto.h>
 
-void kernel_main(void) {
+void kernel_main(void *addr) {
 
     serial_init();
     serial_puts("Hello, World!\n");

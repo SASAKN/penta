@@ -1,5 +1,12 @@
 global start
+global set_up_page_tables
+global set_up_cr_registers
+global enable_long_mode
+global enable_paging
+global set_up_gdt
+global start_boot64
 extern long_mode_start
+extern bootpack32
 
 ; Text Section
 section .text
@@ -7,25 +14,25 @@ bits 32
 start:
     ; Set up the stack pointer
     mov esp, stack_top
+    
+    ; Push the bootloader parameters
+    push 0
+    popfd
 
-    ; Check compatibility
-    call check_bootloader
-    call check_compatibility_cpuid
-    call check_compatibility_long_mode
+    push ebx
 
-    ; Set up for long mode
-    call set_up_page_tables
-    call set_up_cr_registers
-    call enable_long_mode
-    call enable_paging
-
-    ; Set up the GDT
-    lgdt [gdt64.pointer]
-
-    ; Jump to long mode
-    jmp gdt64.code_segment:long_mode_start
+    ; Call the bootpack32
+    call bootpack32
 
     hlt ; halt the CPU
+
+
+; Set up the GDT
+set_up_gdt:
+    lgdt [gdt64.pointer]
+
+start_boot64:
+    jmp gdt64.code_segment:long_mode_start
 
 
 ; Set up the page tables for long mode
@@ -74,7 +81,6 @@ enable_paging:
     mov cr0, eax
 
     ret
-
 
 ; Check whether the CPU is compatible for long mode(x86_64) or not
 check_compatibility_long_mode:

@@ -84,3 +84,30 @@ void serial_inputs(char *buffer, uint64_t max_len) {
     }
     buffer[i] = '\0'; // Null終端
 }
+
+void uint32_to_str(uint32_t value, char *buffer) {
+    // 10進数変換のために必要な最大桁数 + NULL終端
+    char temp[10];
+    int i = 0;
+
+    // 値が0の場合の処理
+    if (value == 0) {
+        buffer[0] = '0';
+        buffer[1] = '\0';
+        return;
+    }
+
+    // 数字を下位桁から取り出してtempに格納
+    while (value > 0) {
+        temp[i++] = '0' + (value % 10);
+        value /= 10;
+    }
+
+    // 逆順にしてbufferに格納
+    int j = 0;
+    while (i > 0) {
+        buffer[j++] = temp[--i];
+    }
+
+    buffer[j] = '\0';
+}

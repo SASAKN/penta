@@ -15,9 +15,9 @@ void serial_putc(char c);
 void serial_puts(const char *s);
 uint8_t serial_inputc();
 void serial_inputs(char *buffer, uint64_t max_len);
+void uint32_to_str(uint32_t value, char *buffer);
 
 // main.c
-void kernel_main(void);
-
+void kernel_main(void *addr);
 
 #endif
