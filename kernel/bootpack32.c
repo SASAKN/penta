@@ -30,9 +30,9 @@ void bootpack32(uint32_t addr) {
     set_up_cr_registers();
     enable_long_mode();
     enable_paging();
-
-    // Set up the GDT and jump to long mode kernel
     set_up_gdt();
+
+    // Jump to the 64bit kernel
     start_boot64();
 
     return;
